@@ -56,18 +56,25 @@ def main():
                 description.write(str(chunks_num) + '\n')
             conn.send('/slider/description')
         elif re.compile('(^[0-9]+)').match(data):
+            if int(data) >= 1:
+                clear_transfered(str((int(data) - 1)))
             chunk_create(data)
             conn.send('/slider/{0}-{1}'.format(CHUNK_NAME, data))
-        elif re.compile('(^[0-9]+)').match(str(data).split('-')[-1]):
-            clear_transfered(str(data).split('-')[-1])
+        elif data == 'finish':
+            clear_transfered(str((int(chunks_num) - 1)))
+        # elif re.compile('(^[0-9]+)').match(str(data).split('-')[-1]):
+        #     clear_transfered(str(data).split('-')[-1])
         #conn.close()
 
 def compress_chunks(chunk, i):
-    compressed_chunk = bz2.compress(bytes(chunk.encode('utf-8')))
     chunk_ar_name = '{0}-{1}'.format(CHUNK_NAME, str(i))
-    with open('{0}/{1}.bz2'.format(NGINX_TRANSFER_DIR, chunk_ar_name), 'wb') as flow:
-        flow.write(compressed_chunk)
+    with open('{}/{}'.format(OF_DIR, chunk_ar_name), 'rb') as data:
+        content = data.read()
+        compressed_content = bz2.compress(content)
     chunk_ar_name += '.bz2'
+    with open('{}/{}'.format(NGINX_TRANSFER_DIR, chunk_ar_name), 'wb') as flow:
+        flow.write(compressed_content)
+    #compressed_chunk = bz2.compress(bytes(chunk.encode('utf-8')))
     return chunk_ar_name, count_checksum(chunk_ar_name)
 
 def count_checksum(chunk_archive):
