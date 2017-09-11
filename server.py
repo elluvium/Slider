@@ -21,7 +21,7 @@ from optparse import OptionParser
 NGINX_TRANSFER_DIR = '/usr/share/nginx/html/slider'
 DESCRIPTION = NGINX_TRANSFER_DIR+'/description'
 block_size = 16384
-CHUNK_NAME = 'slider_chunk'
+CHUNK_NAME = 'slider-chunk'
 OF_DIR = '/tmp/chunks'
 
 def main():
