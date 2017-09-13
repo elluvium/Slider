@@ -8,15 +8,17 @@ import bz2
 import hashlib
 import re
 from optparse import OptionParser
+import daemon
 
-# parser = OptionParser()
+
+parser = OptionParser()
 # parser.add_option('-t', '--start', dest='state', action='store_true',
 #                   help='start as a daemon')
 # parser.add_option('-s', '--stop', dest='state', action='store_false',
 #                   help='stop this daemon')
-# parser.add_option('-n', '--no-daemonize', dest='daemon', action='store_true',
-#                   help='start as a daemon')
-# options, args = parser.parse_args()
+parser.add_option('-n', '--no-daemonize', dest='daemon', action='store_true',
+                  help='start as a daemon')
+options, args = parser.parse_args()
 
 NGINX_TRANSFER_DIR = '/usr/share/nginx/html/slider'
 DESCRIPTION = NGINX_TRANSFER_DIR+'/description'
@@ -100,5 +102,8 @@ def clear_transfered(i):
         os.remove('{}'.format(file))
 
 if __name__ == "__main__":
-    main()
-
+    if options.daemon:
+        main()
+    else:
+        with daemon.DaemonContext():
+            main()
