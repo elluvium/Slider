@@ -38,6 +38,8 @@ def main():
             os.mkdir(NGINX_TRANSFER_DIR)
         else:
             pass
+    sudo_check()
+
     global disk_len
     global chunks_num
     global IF_DIR
@@ -67,6 +69,13 @@ def main():
         # elif re.compile('(^[0-9]+)').match(str(data).split('-')[-1]):
         #     clear_transfered(str(data).split('-')[-1])
         #conn.close()
+
+
+def sudo_check():
+    if os.getuid() != 0:
+        print("You have to run server.py script with admin rights")
+        exit(1)
+
 
 def compress_chunks(chunk, i):
     chunk_ar_name = '{0}-{1}'.format(CHUNK_NAME, str(i))
